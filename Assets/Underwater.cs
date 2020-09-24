@@ -1,68 +1,101 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.ComponentModel;
 
 public class Underwater : MonoBehaviour
 {
+    public UnityStandardAssets.Water.Water waterUp;
+    public UnityStandardAssets.Water.Water waterDown;
+    public Color fog_Color;
 
-    // Attach this script to main camera  
-    // And Define variable underwaterLevel up  
-    // to your water level or sea level Y-coordinate  
-    public float underwaterLevel = 7;
+    public RainCameraController waterSlpashIN;
+    public RainCameraController waterSlpashOut;  
 
-    // These variable to store  
-    // The scene default fog settings  
+    private float underwaterLevel;
     private bool defaultFog = true;
     private Color defaultFogColor;
     private float defaultFogDensity;
     private Material defaultSkybox;
     private float defaultStartDistance;
+    private UnityStandardAssets.ImageEffects.BlurOptimized blurOptimized;
+    private bool firstTimeIN = true;
+    private bool firstTimeOut = false;
+
+    
 
     void Start()
     {
-        // store default fog setting  
-        // we need to restore fog setting  
-        // after we go to surface again  
         defaultFog = RenderSettings.fog;
         defaultFogColor = RenderSettings.fogColor;
         defaultFogDensity = RenderSettings.fogDensity;
         defaultSkybox = RenderSettings.skybox;
         defaultStartDistance = RenderSettings.fogStartDistance;
 
-        // set the background color  
         Camera.main.backgroundColor = new Color(0, 0.4f, 0.7f, 1);
+
+        blurOptimized = GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized>();
+
+        underwaterLevel = waterUp.transform.position.y;
+
     }
 
     void Update()
     {
-        // check if we below the sea or water level  
-        if (transform.position.y < underwaterLevel)
+        if (transform.position.y <= underwaterLevel)
         {
-            // render new fog with blue color  
-            // Or you can change the color to  
-            // match your water  
-            RenderSettings.fog = true;
-            RenderSettings.fogColor = new Color(0, 0.5f, 0.7f, 0.6f);
-            RenderSettings.fogDensity = 0.025f;
-            RenderSettings.fogStartDistance = 0.0f;
-
-            // add this if you want to add blur effect to your underwater  
-            // but first add Image Effect (Pro) Package to your project  
-            // Add component Image Effect > Blur to Main camera  
-            //this.GetComponent<BlurEffect>().enabled = true;  
+            UnderWaterEffect();
+            if(firstTimeIN)
+                LensWetIN();
         }
         else
         {
-            // revert back to default setting  
-            RenderSettings.fog = defaultFog;
-            RenderSettings.fogColor = defaultFogColor;
-            RenderSettings.fogDensity = defaultFogDensity;
-            RenderSettings.skybox = defaultSkybox;
-            RenderSettings.fogStartDistance = defaultStartDistance;
-
-            // add this if you want to add blur effect to your underwater  
-            // but first add Image Effect (Pro) Package to your project  
-            // Add component Image Effect > Blur to Main camera  
-            //this.GetComponent<BlurEffect>().enabled = false;  
+            RevertChanges();
+            if(firstTimeOut)
+                LensWetOUT();
         }
     }
+
+    private void LensWetOUT()
+    {
+        waterUp.gameObject.SetActive(true);
+        waterDown.gameObject.SetActive(false);
+
+        waterSlpashIN.StopImmidiate();
+        waterSlpashOut.Play();
+        firstTimeIN = true;
+        firstTimeOut = false;
+    }
+
+    private void LensWetIN()
+    {
+        waterDown.gameObject.SetActive(true);
+        waterUp.gameObject.SetActive(false);
+        waterSlpashOut.StopImmidiate();
+        waterSlpashIN.Play();
+        firstTimeIN = false;
+        firstTimeOut = true;
+    }
+
+    private void RevertChanges()
+    {
+        RenderSettings.fog = defaultFog;
+        RenderSettings.fogColor = defaultFogColor;
+        RenderSettings.fogDensity = defaultFogDensity;
+        RenderSettings.skybox = defaultSkybox;
+        RenderSettings.fogStartDistance = defaultStartDistance;
+
+        blurOptimized.enabled = false;
+    }
+
+    void UnderWaterEffect()
+    {
+        RenderSettings.fog = true;
+        RenderSettings.fogColor = fog_Color;
+        RenderSettings.fogDensity = 0.025f;
+        RenderSettings.fogStartDistance = 0.0f;
+
+        blurOptimized.enabled = true;
+    }
+
 }
