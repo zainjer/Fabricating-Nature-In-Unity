@@ -8,7 +8,6 @@ public class CollisionEventsListener : MonoBehaviour
     public delegate void onCollision(Collision collision);
     public delegate void onTrigger(Collider collider);
 
-
     public event onCollision onCollisionEnter;
     public event onCollision onCollisionStay;
     public event onCollision onCollisionExit;
@@ -19,6 +18,7 @@ public class CollisionEventsListener : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+       
         onCollisionEnter?.Invoke(collision);
     }
 

@@ -10,11 +10,11 @@ showPackageIndexes = false
 debounceMs = 250
 filters = {
 	asset = true
-	menu = true
-	object = true
-	scene = true
 	settings = true
 	spl = true
+	menu = true
+	scene = true
+	object = true
 }
 scopes = {
 	"last_search.AA9C1166" = "crow"
@@ -25,9 +25,9 @@ providers = {
 		priority = 25
 		defaultAction = null
 	}
-	log = {
-		active = false
-		priority = 210
+	query = {
+		active = true
+		priority = 100
 		defaultAction = null
 	}
 	object = {
@@ -35,9 +35,9 @@ providers = {
 		priority = 55
 		defaultAction = null
 	}
-	packages = {
+	spl = {
 		active = true
-		priority = 90
+		priority = 100
 		defaultAction = null
 	}
 	scene = {
@@ -45,14 +45,14 @@ providers = {
 		priority = 50
 		defaultAction = null
 	}
-	query = {
+	packages = {
 		active = true
-		priority = 100
+		priority = 90
 		defaultAction = null
 	}
-	spl = {
-		active = true
-		priority = 100
+	log = {
+		active = false
+		priority = 210
 		defaultAction = null
 	}
 }

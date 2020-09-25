@@ -2,6 +2,9 @@
 
     public class SimpleCameraController : MonoBehaviour
     {
+
+        CharacterController characterController;
+
         class CameraState
         {
             public float yaw;
@@ -72,6 +75,7 @@
         {
             m_TargetCameraState.SetFromTransform(transform);
             m_InterpolatingCameraState.SetFromTransform(transform);
+            characterController = GetComponent<CharacterController>();
         }
 
         Vector3 GetInputTranslationDirection()
@@ -104,7 +108,7 @@
             return direction;
         }
         
-        void Update()
+        void FixedUpdate()
         {
             if (Input.GetKey(KeyCode.Escape))
             {
@@ -117,6 +121,7 @@
             if (Input.GetMouseButtonDown(1))
             {
                 Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
             
             if (Input.GetMouseButtonUp(1))
@@ -146,6 +151,7 @@
             translation *= Mathf.Pow(2.0f, boost);
 
             m_TargetCameraState.Translate(translation);
+            //characterController.  //Move(translation);
             
             var positionLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / positionLerpTime) * Time.deltaTime);
             var rotationLerpPct = 1f - Mathf.Exp((Mathf.Log(1f - 0.99f) / rotationLerpTime) * Time.deltaTime);

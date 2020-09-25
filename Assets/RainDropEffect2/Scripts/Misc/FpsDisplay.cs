@@ -9,6 +9,13 @@ public class FpsDisplay : MonoBehaviour
     int flameCnt = 0;
     int fps = 0;
 
+    TMPro.TMP_Text text;
+
+    private void Start()
+    {
+        text = GetComponent<TMPro.TMP_Text>();
+    }
+
     void LateUpdate()
     {
         dt = Time.time - startTime;
@@ -19,20 +26,9 @@ public class FpsDisplay : MonoBehaviour
             flameCnt = 0;
             startTime = Time.time;
         }
+
+        text.text = fps.ToString();
     }
 
-    void OnGUI()
-    {
-        int w = Screen.width;
-        int h = Screen.height;
-
-        GUIStyle style = new GUIStyle();
-
-        Rect rect = new Rect(0, h - h / 10, w, h / 10);
-        style.alignment = TextAnchor.UpperLeft;
-        style.fontSize = h / 10;
-        style.normal.textColor = Color.white;
-        string text = string.Format("FPS:{0}", fps);
-        GUI.Label(rect, text, style);
-    }
+    
 }
